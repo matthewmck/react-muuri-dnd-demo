@@ -1,13 +1,243 @@
 body {
+  background: linear-gradient(to top left, #5d38ec, #7d60f0);
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+/* ############### TOP CONTAINER ###############*/
+.drag-container {
+  background: rgba(14, 26, 30, 0.3);
+  border-radius: 12px;
+  margin: 40px 40px 15px 40px;
+  padding: 20px;
+}
+
+.drag-target {
+  min-height: 200px;
+  position: relative;
+}
+
+/* ############### BOTTOM CONTAINER ###############*/
+.drop-container {
+  background: rgba(50, 50, 50, 0.95);
+  border: 1px solid transparent;
+  border-bottom: 1px solid #333333;
+  border-radius: 12px;
+  border-top: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.39), 0 -1px 1px #333333,
+    0 1px 0 #333333;
+  margin: 10px 40px 40px 40px;
+  padding: 20px;
+}
+
+.drop-target {
+  position: relative;
+}
+
+/* ############### DELETE CONTAINER ###############*/
+.delete-drop-target {
+  width: 50px;
+  min-height: 56px;
+  background: rgba(0, 0, 0, 0);
+  color: white;
+  position: relative;
+  background-image: url("./assets/img/trash.png");
+  background-size: cover;
+
+  max-height: 56px;
+  max-width: 56px;
+  margin: 0 auto 20px auto;
+}
+
+.delete-drop-hover {
+  background-image: url("./assets/img/trash-alt.png") !important;
+}
+
+
+.delete-bg {
+  background: linear-gradient(rgba(0,0,0,0), rgb(0,0,0)) !important;
+}
+
+/* ############### DRAGGABLE ITEMS ###############*/
+.item {
+  border-radius: 12px;
+  display: block;
+  margin: 5px;
+  position: absolute;
+  z-index: 1;
+}
+
+.item:focus {
+  box-shadow: 0 0 0 5px #3cd1ca;
+  outline: none;
+}
+
+.item.muuri-item-dragging {
+  z-index: 3;
+}
+
+.item.muuri-item-releasing {
+  z-index: 2;
+}
+
+.item.muuri-item-hidden {
+  z-index: 0;
+}
+
+.draggable-item {
+  background: #f0f8ff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 50px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  width: 100px;
+}
+
+.item.muuri-item-dragging .item-content .draggable-item {
+  background: #8993a2;
+}
+
+.item.muuri-item-releasing .item-content .draggable-item {
+  background: #152c43;
+}
+
+/* ############### POSITIONS ###############*/
+.position {
+  background: #6643f5;
+  border-radius: 8px;
+  color: #f0f8ff;
+  cursor: pointer;
+  font-size: 25px;
+  height: 100px;
+  line-height: 100px;
+  margin-left: 15px;
+  text-align: center;
+  width: 40px;
+}
+
+.item-content > :first-child:focus .position {
+  box-shadow: 0 0 0 5px #3cd1ca;
+  outline: none;
+}
+
+/* ############### TRAY ###############*/
+.toggle-btn {
+  background: rgba(0, 0, 0, 0);
+  border: none;
+  border-radius: 12px;
+  color: #eaeaea;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  height: 50px;
+  margin-left: 20px;
+}
+
+.toggle-icon {
+  margin-right: 15px;
+}
+
+.toggle-btn:focus {
+  color: #3cd1ca;
+  outline: none;
+}
+
+.tray {
+  background: #232323;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  bottom: 0;
+  color: white;
+  left: 0;
+  position: fixed;
+  right: 0;
+}
+
+.tray-tab {
+  height: auto;
+}
+
+.tray-body {
+  background: #232323;
+  max-height: 0px;
+  overflow: auto;
+  transition: max-height 500ms ease-in-out;
+}
+
+.tray-body-show {
+  height: auto;
+  max-height: 600px;
+}
+
+.tray-clear-btn {
+  background: rgba(0,0,0,0);
+  border: none;
+  color:#f15353;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  margin-right: 40px;
+}
+
+.clear-btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ############### PLACEHOLDER ###############*/
+.placeholder {
+  background: rgba(35, 35, 35, 0.9);
+  border-radius: 8px;
+  height: 99px;
+  width: 100px;
+
+  border: 1px solid transparent;
+  border-bottom: 1px solid #383838;
+  border-top: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.39), 0 -1px 1px #383838,
+    0 1px 0 #383838;
+  text-align: center;
+  line-height: 100px;
+}
+
+.placeholder-icon {
+  color: #333333;
+  vertical-align: -0.3em;
+}
+
+/* ############### RESULT BTN ###############*/
+.result-btn {
+  float: right;
+  margin-right: 40px;
+  background: rgba(0,0,0, 0.5);
+  color: #f0f8ff;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* ############### DEMO TEXT ###############*/
+.demo {
+  background: black;
+  color: #e23a3a;
+  display: inline-block;
+  font-family: "Pacifico", cursive;
+  font-size: 72px;
+  line-height: 80px;
+  margin-left: 30px;
+  padding: 0 10px;
+  transform: rotate(-10deg);
+}
+
+
+.test-block {
+  height: 100px;
+  width: 100px;
+  background: pink;
 }

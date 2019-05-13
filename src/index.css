@@ -54,16 +54,37 @@ body {
   background-image: url("./assets/img/trash-alt.png") !important;
 }
 
-
 .delete-bg {
-  background: linear-gradient(rgba(0,0,0,0), rgb(0,0,0)) !important;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0)) !important;
 }
 
 /* ############### DRAGGABLE ITEMS ###############*/
+.draggable-item {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 50px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  width: 100px;
+  transition: all 50ms ease-in-out;
+}
+
+.draggable-item:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+  transform: scale(1.15, 1.15);
+}
+
+.draggable-item:focus {
+  box-shadow: 0 0 0 0.1rem rgb(41, 128, 185);
+  outline: none;
+}
+
 .item {
   border-radius: 12px;
   display: block;
-  margin: 5px;
+  margin: 10px;
   position: absolute;
   z-index: 1;
 }
@@ -85,23 +106,9 @@ body {
   z-index: 0;
 }
 
-.draggable-item {
-  background: #f0f8ff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 50px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  width: 100px;
-}
-
 .item.muuri-item-dragging .item-content .draggable-item {
-  background: #8993a2;
-}
-
-.item.muuri-item-releasing .item-content .draggable-item {
-  background: #152c43;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  transform: scale(1, 1);
 }
 
 /* ############### POSITIONS ###############*/
@@ -173,9 +180,9 @@ body {
 }
 
 .tray-clear-btn {
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
   border: none;
-  color:#f15353;
+  color: #f15353;
   cursor: pointer;
   font-size: 18px;
   font-weight: 600;
@@ -212,7 +219,7 @@ body {
 .result-btn {
   float: right;
   margin-right: 40px;
-  background: rgba(0,0,0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #f0f8ff;
   border: none;
   padding: 10px;
@@ -234,7 +241,6 @@ body {
   padding: 0 10px;
   transform: rotate(-10deg);
 }
-
 
 .test-block {
   height: 100px;

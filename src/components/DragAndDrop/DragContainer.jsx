@@ -1,32 +1,37 @@
-import React, { Component } from 'react';
-import Muuri from 'muuri';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import Muuri from "muuri";
+import PropTypes from "prop-types";
 
 class DragContainer extends Component {
-
   dragContainer = React.createRef();
 
   componentDidMount() {
     const { controlToggle, gridInstance } = this.props;
+    let zeroIndex;
 
     const grid = new Muuri(this.dragContainer.current, {
-      items: '.item',
+      items: ".item",
       dragEnabled: true,
       dragContainer: document.body,
       dragSortInterval: 0,
       dragSort: () => {
-        return this.props.dragInto
+        return this.props.dragInto;
+      },
+      dragSortPredicate: item => {
+        const result = Muuri.ItemDrag.defaultSortPredicate(item, {
+          actions: "swap",
+          threshold: 50
+        });
+        return result && result.index === 0 ? false : result;
       },
       dragStartPredicate: (item, e) => {
-        if (e.distance > 25) {
-          if (controlToggle) controlToggle(true);
-          return true;
-        }
+        if (controlToggle) controlToggle(true);
+        return true;
       }
-    }).on('dragEnd', () => {
+    }).on("dragEnd", () => {
       if (controlToggle) {
         setTimeout(() => {
-          controlToggle(false)
+          controlToggle(false);
         }, 480);
       }
     });
@@ -35,11 +40,7 @@ class DragContainer extends Component {
   }
 
   render() {
-    const {
-      idKey,
-      labelKey,
-      list
-    } = this.props;
+    const { idKey, labelKey, list } = this.props;
 
     return (
       <div className="drag-container">

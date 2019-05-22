@@ -247,3 +247,92 @@ body {
   width: 100px;
   background: pink;
 }
+
+/* ############### REACT MODAL ###############*/
+.edit-word-input {
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: rgb(247, 247, 247);
+}
+
+.edit-word-btn {
+  font-size: 20px;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #5d38ec;
+  color: white;
+  cursor: pointer;
+}
+
+.ReactModal__Content {
+  background: rgb(223, 223, 223);
+  border-radius: 1.2rem;
+  box-shadow: 0 1.5rem 3rem rgba(74, 81, 84, 0.1),
+    0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+  padding: 2.5rem;
+  z-index: 10;
+}
+
+.ReactModal__Content:focus {
+  outline: none;
+}
+
+.ReactModal__message-content {
+  width: 26rem;
+  bottom: auto;
+  left: 50%;
+  margin-right: -50%;
+  overflow: auto;
+  position: absolute;
+  right: auto;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ReactModal__close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 1170px) {
+  .ReactModal__dictionary-content {
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+}
+
+.ReactModal__Overlay {
+  background: rgba(34, 37, 40, 0.75);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: opacity 150ms ease-in-out;
+  z-index: 10;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.ReactModal__content--desc {
+  text-align: center;
+}
+
+.ReactModal__content--desc-alert {
+  max-width: 40rem;
+}

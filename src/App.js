@@ -7,6 +7,7 @@ import DropContainer from "./components/DragAndDrop/DropContainer";
 import Tray from "./components/Tray";
 
 import { getList } from "./utils/dndUtils";
+import EditModal from "./components/EditModal";
 
 class App extends Component {
   state = {
@@ -21,7 +22,8 @@ class App extends Component {
       { id: 5, title: "This is position 5" }
     ],
     toggle: false,
-    topGrid: null
+    topGrid: null,
+    contentExample: "hello"
   };
 
   getResults = () => {

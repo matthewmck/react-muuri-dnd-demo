@@ -2,34 +2,51 @@ import React, { Component } from "react";
 import Muuri from "muuri";
 import "react-tippy/dist/tippy.css";
 import { Tooltip } from "react-tippy";
-import { cloneItem } from "../../utils/dndUtils";
+import { 
+  cloneItem, 
+  grabItemIndex, 
+  addNewDraggable,
+  grabPositionBoundaries
+ } from "../../utils/dndUtils";
 import PropTypes from "prop-types";
 import EditModal from "../EditModal";
-
+import { strToArray } from "../../utils/arrayUtils";
 import accessibilityPlugin from "./accessibilityPlugin";
 
 class DropContainer extends Component {
-  state = { text: undefined, modalIsOpen: false, item: null };
+  state = { 
+    text: undefined, 
+    modalIsOpen: false, 
+    item: null,
+    title: "",
+    desc: "",
+    positionIndex: null,
+    btnText: ""
+  };
 
   dropContainer = React.createRef();
+  grid;
 
   componentDidMount() {
     const { gridInstance } = this.props;
     const copyObj = {};
     let orignalState, zeroIndex;
 
-    const grid = new Muuri(this.dropContainer.current, {
+    this.grid = new Muuri(this.dropContainer.current, {
       items: ".item",
       dragEnabled: true,
       dragContainer: document.body,
       dragSortInterval: 0,
       dragSort: () => {
-        return [...this.props.dragInto, grid];
+        return [...this.props.dragInto, this.grid];
       },
-      dragStartPredicate: item => {
+      dragStartPredicate: (item, e) => {
         const dataType = item._element.getAttribute("data-type");
 
         if (dataType === "position" || dataType === "placeholder") {
+          if (e.isFinal && dataType === "position") {
+            this.handlePositionItems(item);
+          }
           return false;
         }
 
@@ -46,7 +63,7 @@ class DropContainer extends Component {
       }
     })
       .on("dragStart", () => {
-        orignalState = grid.getItems();
+        orignalState = this.grid.getItems();
       })
       .on("receive", data => {
         if (
@@ -60,33 +77,35 @@ class DropContainer extends Component {
               data.fromGrid.show(clone);
             }
           };
-          grid.once("dragReleaseStart", copyObj[data.item._id]);
+          this.grid.once("dragReleaseStart", copyObj[data.item._id]);
         }
       })
       .on("send", data => {
         if (copyObj[data.item._id]) {
-          grid.off("dragReleaseStart", copyObj[data.item._id]);
+          this.grid.off("dragReleaseStart", copyObj[data.item._id]);
         }
       })
       .on("dragEnd", (item, e) => {
         if (e.distance < 10) {
           this.setState({
             text: item._element.innerText,
-            itemID: item,
-            modalIsOpen: true
+            title: "Edit word:",
+            item: item,
+            modalIsOpen: true,
+            btnText: 'Update'
           });
         }
 
-        if (zeroIndex && item.getGrid()._id === grid._id) {
-          grid.sort(orignalState);
+        if (zeroIndex && item.getGrid()._id === this.grid._id) {
+          this.grid.sort(orignalState);
         }
       })
       .on("dragReleaseEnd", () => {
-        grid.synchronize();
+        this.grid.synchronize();
       });
 
-    accessibilityPlugin(grid, this.dropContainer.current);
-    if (gridInstance) gridInstance(grid);
+    accessibilityPlugin(this.grid, this.dropContainer.current);
+    if (gridInstance) gridInstance(this.grid);
   }
 
   componentWillUnmount() {
@@ -94,13 +113,46 @@ class DropContainer extends Component {
   }
 
   controlUpdate = () => {
-    const item = this.state.itemID.getElement().children[0].children[0];
-    item.innerText = this.state.text;
+    this.grid.synchronize();
+    const index = this.state.positionIndex !== null
+      ? this.state.positionIndex + 1
+      : grabItemIndex(this.grid._items, this.state.item._id);
+    this.grid.remove(this.state.item, {removeElements: true});
 
-    // this is the method for seperating out spaces
-    // let ex = "this   arm's 😎😜 🙃";
-    // var one = ex.split(/(\s+)/u).filter( e => e.trim().length > 0);
+    const arr = strToArray(this.state.text);
+    for (let i = 0; i < arr.length; i++) {
+      console.log(arr[i])
+      this.grid.add(addNewDraggable(arr[i]), { index: index + i });
+    }
   };
+
+  handlePositionItems = item => {
+    this.grid.synchronize();
+
+    const boundaries = grabPositionBoundaries(this.grid._items, item._id);
+    const { startIndex, endIndex } = boundaries;
+    let itemsArr = [];
+    let strArr = [];
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const type = this.grid._items[i]._element.getAttribute("data-type");
+
+      if (type === 'draggable') {
+        itemsArr = [...itemsArr, this.grid._items[i]];
+        strArr = [...strArr, this.grid._items[i]._element.innerText];
+      }
+    }
+
+    this.setState({
+      text: strArr.join(' '),
+      positionIndex: startIndex,
+      item: itemsArr,
+      title: `Position ${item._element.children[0].children[0].innerText}`,
+      desc: item._element.children[0].children[0].getAttribute("data-original-title"),
+      modalIsOpen: true,
+      btnText: strArr.length === 0 ? 'Add' : 'Update'
+    });
+  }
 
   render() {
     const { idKey, positions, titleKey, toggle } = this.props;
@@ -131,15 +183,23 @@ class DropContainer extends Component {
               </article>
             ))}
         </section>
-        {this.modalIsOpen && (
+        {this.state.modalIsOpen && (
           <EditModal
             text={this.state.text}
             updateText={value => this.setState({ text: value })}
             controlUpdate={this.controlUpdate}
+            title={this.state.title}
+            btnText={this.state.btnText}
+            desc={this.state.desc}
             closeModal={() =>
               this.setState({
                 text: undefined,
-                modalIsOpen: false
+                title: "",
+                desc: "",
+                modalIsOpen: false,
+                item: null,
+                positionIndex: null,
+                btnText: ""
               })
             }
             openModal={this.state.modalIsOpen}

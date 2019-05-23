@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 Modal.setAppElement("#root");
 
 class EditModal extends React.Component {
+
   closeModal = () => {
     this.props.closeModal();
   };
@@ -25,7 +26,10 @@ class EditModal extends React.Component {
           onRequestClose={this.closeModal}
           contentLabel="Edit Word"
         >
-          <h2>Edit Word:</h2>
+          <h2>{this.props.title}</h2>
+          {this.props.desc && (
+            <p>{this.props.desc}</p>
+          )}
           <input
             onChange={e => this.props.updateText(e.target.value)}
             className="edit-word-input"
@@ -33,7 +37,7 @@ class EditModal extends React.Component {
             value={this.props.text}
           />
           <button onClick={this.handleUpdate} className="edit-word-btn">
-            Update
+            {this.props.btnText}
           </button>
         </Modal>
       </div>
@@ -42,6 +46,9 @@ class EditModal extends React.Component {
 }
 
 EditModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  btnText: PropTypes.string.isRequired,
+  desc: PropTypes.string,
   text: PropTypes.string.isRequired,
   updateText: PropTypes.func.isRequired,
   controlUpdate: PropTypes.func.isRequired,

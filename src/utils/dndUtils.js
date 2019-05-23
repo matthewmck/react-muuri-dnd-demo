@@ -148,3 +148,56 @@ export const isLastItem = (container, itemIndex) => {
 
   return false;
 }
+
+export const grabItemIndex = (list, itemID) => {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i]._id === itemID) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+export const grabPositionBoundaries = (list, itemID) => {
+
+  let startIndex;
+  let endIndex;
+
+  for (let i = 0; i < list.length; i++) {
+    if (list[i]._id === itemID) {
+      startIndex = i;
+      break;
+    }
+  }
+
+  for (let i = startIndex + 1; i < list.length; i++) {
+    const type = list[i]._element.getAttribute("data-type");
+    
+    if (type === 'position') {
+      endIndex = i;
+      break;
+    }
+  }
+
+  return { startIndex, endIndex };
+}
+
+export const addNewDraggable = item => {
+  const container = document.createElement("article");
+  container.classList.add("item");
+  container.setAttribute("data-type", "draggable");
+  container.setAttribute("tabindex", "0");
+
+  const itemContent = document.createElement("div");
+  itemContent.classList.add("item-content");
+
+  const draggableItem = document.createElement("div");
+  draggableItem.classList.add("draggable-item");
+
+  draggableItem.innerText = item;
+  itemContent.appendChild(draggableItem);
+  container.appendChild(itemContent);
+
+  return container;
+}
